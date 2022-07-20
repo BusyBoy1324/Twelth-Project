@@ -1,13 +1,13 @@
-﻿using TwelfthTask.Infrastructure;
+﻿using AutoMapper;
 using TwelfthTask.Models;
 
 namespace TwelfthTask.Services
 {
-    public class FinancialOperationRepos : IFinancialOperationRepos
+    public class FinancialOperationServices : IFinancialOperationServices
     {
         private TwelfthProjectContext _context;
 
-        public FinancialOperationRepos(TwelfthProjectContext context)
+        public FinancialOperationServices(TwelfthProjectContext context)
         {
             _context = context;
         }
@@ -32,6 +32,14 @@ namespace TwelfthTask.Services
             return await _context.FinancialOperations.Where(i => i.Id == id).FirstOrDefaultAsync();
         }
 
+        public FinancialOperation GetMappedModel(FinancialOperationCreate financialOperationCreate)
+        {
+            var config = new MapperConfiguration(cfg => cfg.CreateMap<FinancialOperationCreate, FinancialOperation>());
+            var mapper = config.CreateMapper();
+            FinancialOperation financialOperation = mapper.Map<FinancialOperation>(financialOperationCreate);
+            return financialOperation;
+        }
+
         public void Insert(FinancialOperation financialOperation)
         {
             _context.FinancialOperations.Add(financialOperation);
@@ -40,6 +48,11 @@ namespace TwelfthTask.Services
         public void Update(FinancialOperation financialOperation)
         {
             _context.FinancialOperations.Update(financialOperation);
+        }
+
+        public void Save()
+        {
+            _context.SaveChanges();
         }
     }
 }

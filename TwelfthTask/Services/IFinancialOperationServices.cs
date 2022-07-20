@@ -1,8 +1,8 @@
 ﻿using TwelfthTask.Models;
 
-namespace TwelfthTask.Infrastructure
+namespace TwelfthTask.Services
 {
-    public interface IFinancialOperationRepos
+    public interface IFinancialOperationServices
     {
         Task<List<FinancialOperation>> GetAllAsync();
         Task<FinancialOperation> GetByIdAsync(int id);
@@ -10,5 +10,7 @@ namespace TwelfthTask.Infrastructure
         void Update(FinancialOperation financialOperation);
         void Delete(FinancialOperation financialOperation);
         Task<FinancialOperation> FindAsync(int id);
+        FinancialOperation GetMappedModel(FinancialOperationCreate financialOperationCreate);
+        void Save();
     }
 }

@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using TwelfthTask.Infrastructure;
 using TwelfthTask.Models;
+using TwelfthTask.Services;
 
 namespace TwelfthTask.Controllers
 {
@@ -9,27 +9,17 @@ namespace TwelfthTask.Controllers
     [ApiController]
     public class DailyReportController : ControllerBase
     {
-        private readonly IDailyReportRepos _dailyReport;
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly IGetReports _reports;
 
-        public DailyReportController(IDailyReportRepos dailyReport, IUnitOfWork unitOfWork)
+        public DailyReportController(IGetReports reports)
         {
-            _dailyReport = dailyReport;
-            _unitOfWork = unitOfWork;
+            _reports = reports;
         }
 
         [HttpGet("{date}")]
         public async Task<ActionResult<DailyReport>> GetDailyRepotByDate(DateTime date)
         {
-            List<FinancialOperation> financialOperations = new List<FinancialOperation>();
-            int expenses = 0, income = 0;
-            var finOp = await _unitOfWork.FinancialOperation.GetAllAsync();
-            var samples = _dailyReport.GetInformationAboutDate(finOp, date);
-            financialOperations = samples.financialOperations;
-            income = samples.income;
-            expenses = samples.expenses;
-
-            var dailyReport = new DailyReport(date, income, expenses, financialOperations);
+            var dailyReport = await _reports.GetDailyReportAsync(date);
             return Ok(dailyReport);
         }
     }

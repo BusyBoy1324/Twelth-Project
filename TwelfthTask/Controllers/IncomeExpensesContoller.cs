@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using TwelfthTask.Infrastructure;
 using TwelfthTask.Models;
+using TwelfthTask.Services;
 
 namespace TwelfthTask.Controllers
 {
@@ -9,71 +9,55 @@ namespace TwelfthTask.Controllers
     [ApiController]
     public class IncomeExpensesContoller : ControllerBase
     {
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly IIncomeExpensesTypeServices _incomeExpensesServices;
 
-        public IncomeExpensesContoller(IUnitOfWork unitOfWork)
+        public IncomeExpensesContoller(IIncomeExpensesTypeServices incomeExpensesServices)
         {
-            _unitOfWork = unitOfWork;
+            _incomeExpensesServices = incomeExpensesServices;
         }
 
         [HttpGet]
         public async Task<ActionResult<List<IncomeExpenses>>> GetIncomeExpenses()
         {
-            return Ok(await _unitOfWork.IncomeExpenses.GetAllAsync());
+            return Ok(await _incomeExpensesServices.GetAllAsync());
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<IncomeExpenses>> GetIncomeExpensesById(int id)
         {
-            var incomeExpenses = await _unitOfWork.IncomeExpenses.FindAsync(id);
-            if (incomeExpenses == null)
-            {
-                return BadRequest("Income or expense not found.");
-            }
+            var incomeExpenses = await _incomeExpensesServices.FindAsync(id);
             return Ok(incomeExpenses);
         }
 
         [HttpPost]
         public async Task<ActionResult<List<IncomeExpenses>>> AddIncomeExpenses(IncomeExpensesCreate incomeExpensesCreate)
         {
-            var config = new MapperConfiguration(cfg => cfg.CreateMap<IncomeExpensesCreate, IncomeExpenses>());
-            var mapper = config.CreateMapper();
-            IncomeExpenses incomeExpenses = mapper.Map<IncomeExpenses>(incomeExpensesCreate);
-            _unitOfWork.IncomeExpenses.Insert(incomeExpenses);
-            await _unitOfWork.Save();
+            var incomeExpenses = _incomeExpensesServices.GetMappedModel(incomeExpensesCreate);
+            _incomeExpensesServices.Insert(incomeExpenses);
+            _incomeExpensesServices.Save();
 
-            return Ok(await _unitOfWork.IncomeExpenses.GetAllAsync());
+            return Ok(await _incomeExpensesServices.GetAllAsync());
         }
 
         [HttpPut]
         public async Task<ActionResult<IncomeExpenses>> UpdateIncomeExpenses(
             IncomeExpenses request)
         {
-            var incomeExpenses = await _unitOfWork.IncomeExpenses.FindAsync(request.Id);
-            if (incomeExpenses == null)
-            {
-                return BadRequest("Income or expense not found");
-            }
+            var incomeExpenses = await _incomeExpensesServices.FindAsync(request.Id);
+            _incomeExpensesServices.Update(request);
+            _incomeExpensesServices.Save();
 
-            _unitOfWork.IncomeExpenses.Update(request);
-            await _unitOfWork.Save();
-
-            return Ok(await _unitOfWork.IncomeExpenses.GetAllAsync());
+            return Ok(await _incomeExpensesServices.GetAllAsync());
         }
 
         [HttpDelete]
         public async Task<ActionResult<List<IncomeExpenses>>> DeleteIncomeExpenses(int id)
         {
-            var incomeExpenses = await _unitOfWork.IncomeExpenses.FindAsync(id);
-            if (incomeExpenses == null)
-            {
-                return BadRequest("Income or expense not found");
-            }
+            var incomeExpenses = await _incomeExpensesServices.FindAsync(id);
+            _incomeExpensesServices.Delete(incomeExpenses);
+            _incomeExpensesServices.Save();
 
-            _unitOfWork.IncomeExpenses.Delete(incomeExpenses);
-            await _unitOfWork.Save();
-
-            return Ok(await _unitOfWork.IncomeExpenses.GetAllAsync());
+            return Ok(await _incomeExpensesServices.GetAllAsync());
         }
     }
 }
