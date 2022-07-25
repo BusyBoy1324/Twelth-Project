@@ -6,11 +6,11 @@ namespace TwelfthTask.Services
     {
         Task<List<FinancialOperation>> GetAllAsync();
         Task<FinancialOperation> GetByIdAsync(int id);
-        void Insert(FinancialOperation financialOperation);
-        void Update(FinancialOperation financialOperation);
-        void Delete(FinancialOperation financialOperation);
+        Task<FinancialOperation> InsertAsync(FinancialOperationDto financialOperationCreate);
+        Task UpdateAsync(FinancialOperation financialOperation);
+        Task Delete(int id);
         Task<FinancialOperation> FindAsync(int id);
-        FinancialOperation GetMappedModel(FinancialOperationCreate financialOperationCreate);
-        void Save();
+        Task<List<FinancialOperation>> GetAllByDateAsync(DateTime date);
+        Task<List<FinancialOperation>> GetAllByPeriodAsync(DateTime staDate, DateTime endDate);
     }
 }

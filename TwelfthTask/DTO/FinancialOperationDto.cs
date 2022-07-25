@@ -1,6 +1,6 @@
 ﻿namespace TwelfthTask.Models
 {
-    public class FinancialOperationCreate
+    public class FinancialOperationDto
     {
         public DateTime Date { get; set; }
         public string Name { get; set; } = String.Empty;

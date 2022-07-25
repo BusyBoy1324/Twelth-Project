@@ -17,46 +17,37 @@ namespace TwelfthTask.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<IncomeExpenses>>> GetIncomeExpenses()
+        public async Task<ActionResult<List<IncomeExpenses>>> GetAllIncomeExpensesAsync()
         {
             return Ok(await _incomeExpensesServices.GetAllAsync());
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<IncomeExpenses>> GetIncomeExpensesById(int id)
+        public async Task<ActionResult<IncomeExpenses>> GetIncomeExpensesByIdAsync(int id)
         {
             var incomeExpenses = await _incomeExpensesServices.FindAsync(id);
             return Ok(incomeExpenses);
         }
 
         [HttpPost]
-        public async Task<ActionResult<List<IncomeExpenses>>> AddIncomeExpenses(IncomeExpensesCreate incomeExpensesCreate)
+        public async Task<ActionResult<List<IncomeExpenses>>> AddIncomeExpensesAsync([FromBody] IncomeExpensesDto incomeExpensesCreate)
         {
-            var incomeExpenses = _incomeExpensesServices.GetMappedModel(incomeExpensesCreate);
-            _incomeExpensesServices.Insert(incomeExpenses);
-            _incomeExpensesServices.Save();
-
-            return Ok(await _incomeExpensesServices.GetAllAsync());
+            var incomeExpenses = await _incomeExpensesServices.InsertAsync(incomeExpensesCreate);
+            return Ok(incomeExpenses);
         }
 
         [HttpPut]
-        public async Task<ActionResult<IncomeExpenses>> UpdateIncomeExpenses(
-            IncomeExpenses request)
+        public async Task<ActionResult<IncomeExpenses>> UpdateIncomeExpensesAsync(
+            [FromBody] IncomeExpenses request)
         {
-            var incomeExpenses = await _incomeExpensesServices.FindAsync(request.Id);
-            _incomeExpensesServices.Update(request);
-            _incomeExpensesServices.Save();
-
-            return Ok(await _incomeExpensesServices.GetAllAsync());
+            await _incomeExpensesServices.UpdateAsync(request);
+            return Ok(request);
         }
 
         [HttpDelete]
-        public async Task<ActionResult<List<IncomeExpenses>>> DeleteIncomeExpenses(int id)
+        public async Task<ActionResult<List<IncomeExpenses>>> DeleteIncomeExpensesAsync([FromQuery] int id)
         {
-            var incomeExpenses = await _incomeExpensesServices.FindAsync(id);
-            _incomeExpensesServices.Delete(incomeExpenses);
-            _incomeExpensesServices.Save();
-
+            await _incomeExpensesServices.DeleteAsync(id);
             return Ok(await _incomeExpensesServices.GetAllAsync());
         }
     }

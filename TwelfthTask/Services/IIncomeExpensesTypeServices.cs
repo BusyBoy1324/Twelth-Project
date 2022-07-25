@@ -4,13 +4,11 @@ namespace TwelfthTask.Services
 {
     public interface IIncomeExpensesTypeServices
     {
-        Task<IList<IncomeExpenses>> GetAllAsync();
+        Task<List<IncomeExpenses>> GetAllAsync();
         Task<IncomeExpenses> GetByIdAsync(int id);
-        void Insert(IncomeExpenses incomeExpenses);
-        void Update(IncomeExpenses incomeExpenses);
-        void Delete(IncomeExpenses incomeExpenses);
+        Task<IncomeExpenses> InsertAsync(IncomeExpensesDto incomeExpensesCreate);
+        Task UpdateAsync(IncomeExpenses incomeExpenses);
+        Task DeleteAsync(int id);
         Task<IncomeExpenses> FindAsync(int id);
-        IncomeExpenses GetMappedModel(IncomeExpensesCreate incomeExpensesCreate);
-        void Save();
     }
 }

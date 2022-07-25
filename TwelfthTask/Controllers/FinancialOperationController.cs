@@ -18,46 +18,37 @@ namespace TwelfthTask.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<FinancialOperation>>> Get()
+        public async Task<ActionResult<List<FinancialOperation>>> GetAllAsync()
         {
             return Ok(await _finServices.GetAllAsync());
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<FinancialOperation>> GetById(int id)
+        public async Task<ActionResult<FinancialOperation>> GetByIdAsync(int id)
         {
             var financialOperation = await _finServices.FindAsync(id);
             return Ok(financialOperation);
         }
 
         [HttpPost]
-        public async Task<ActionResult<List<FinancialOperation>>> AddFinancialOperation(FinancialOperationCreate financialOperationCreate)
+        public async Task<ActionResult<FinancialOperation>> AddFinancialOperationAsync([FromBody] FinancialOperationDto financialOperationCreate)
         {
-            var financialOperation = _finServices.GetMappedModel(financialOperationCreate);
-            _finServices.Insert(financialOperation);
-            _finServices.Save();
-
-            return Ok(await _finServices.GetAllAsync());
+            var financialOperation = await _finServices.InsertAsync(financialOperationCreate);
+            return Ok(financialOperation);
         }
 
         [HttpPut]
         public async Task<ActionResult<FinancialOperation>> UpdateFinancialOperation(
-             FinancialOperation request)
+            [FromBody] FinancialOperation request)
         {
-            var dbFinancialOperation = await _finServices.FindAsync(request.Id);
-            _finServices.Update(request);
-            _finServices.Save();
-
-            return Ok(await _finServices.GetAllAsync());
+            await _finServices.UpdateAsync(request);
+            return Ok(request);
         }
 
         [HttpDelete]
-        public async Task<ActionResult<List<FinancialOperation>>> DeleteFinancialOperation(int id)
+        public async Task<ActionResult<List<FinancialOperation>>> DeleteFinancialOperationAsync([FromQuery] int id)
         {
-            var dbFinancialOperation = await _finServices.FindAsync(id);
-            _finServices.Delete(dbFinancialOperation);
-            _finServices.Save();
-
+            await _finServices.Delete(id);
             return Ok(await _finServices.GetAllAsync());
         }
     }

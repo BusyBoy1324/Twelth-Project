@@ -12,8 +12,8 @@ using TwelfthTask.Data;
 namespace TwelfthTask.Migrations
 {
     [DbContext(typeof(TwelfthProjectContext))]
-    [Migration("20220719114807_newDbb")]
-    partial class newDbb
+    [Migration("20220721122635_IsIncome")]
+    partial class IsIncome
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -41,6 +41,9 @@ namespace TwelfthTask.Migrations
 
                     b.Property<int>("IncomeExpensesTypeId")
                         .HasColumnType("int");
+
+                    b.Property<bool>("IsIncome")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .IsRequired()

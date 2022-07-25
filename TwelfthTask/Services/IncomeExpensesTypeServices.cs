@@ -6,16 +6,20 @@ namespace TwelfthTask.Services
 {
     public class IncomeExpensesTypeServices : IIncomeExpensesTypeServices
     {
+        private readonly IMapper _mapper;
         private TwelfthProjectContext _context;
 
-        public IncomeExpensesTypeServices(TwelfthProjectContext context)
+        public IncomeExpensesTypeServices(TwelfthProjectContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
-        public void Delete(IncomeExpenses incomeExpenses)
+        public async Task DeleteAsync(int id)
         {
+            var incomeExpenses = await FindAsync(id);
             _context.IncomeExpenses.Remove(incomeExpenses);
+            await Save();
         }
 
         public async Task<IncomeExpenses> FindAsync(int id)
@@ -23,7 +27,7 @@ namespace TwelfthTask.Services
             return await _context.IncomeExpenses.FindAsync(id);
         }
 
-        public async Task<IList<IncomeExpenses>> GetAllAsync()
+        public async Task<List<IncomeExpenses>> GetAllAsync()
         {
             return await _context.IncomeExpenses.ToListAsync();
         }
@@ -33,27 +37,29 @@ namespace TwelfthTask.Services
             return await _context.IncomeExpenses.Where(i => i.Id == id).FirstOrDefaultAsync();
         }
 
-        public IncomeExpenses GetMappedModel(IncomeExpensesCreate incomeExpensesCreate)
+        public IncomeExpenses GetMappedModel(IncomeExpensesDto incomeExpensesCreate)
         {
-            var config = new MapperConfiguration(cfg => cfg.CreateMap<IncomeExpensesCreate, IncomeExpenses>());
-            var mapper = config.CreateMapper();
-            IncomeExpenses incomeExpenses = mapper.Map<IncomeExpenses>(incomeExpensesCreate);
+            IncomeExpenses incomeExpenses = _mapper.Map<IncomeExpenses>(incomeExpensesCreate);
             return incomeExpenses;
         }
 
-        public void Insert(IncomeExpenses incomeExpenses)
+        public async Task<IncomeExpenses> InsertAsync(IncomeExpensesDto incomeExpensesCreate)
         {
+            var incomeExpenses = GetMappedModel(incomeExpensesCreate);
             _context.IncomeExpenses.Add(incomeExpenses);
+            await Save();
+            return incomeExpenses;
         }
 
-        public void Save()
+        public async Task Save()
         {
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
-        public void Update(IncomeExpenses incomeExpenses)
+        public async Task UpdateAsync(IncomeExpenses incomeExpenses)
         {
             _context.IncomeExpenses.Update(incomeExpenses);
+            await Save();
         }
     }
 }
