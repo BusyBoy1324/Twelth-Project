@@ -12,8 +12,8 @@ using TwelfthTask.Data;
 namespace TwelfthTask.Migrations
 {
     [DbContext(typeof(TwelfthProjectContext))]
-    [Migration("20220721122635_IsIncome")]
-    partial class IsIncome
+    [Migration("20220725142453_Init")]
+    partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -42,9 +42,6 @@ namespace TwelfthTask.Migrations
                     b.Property<int>("IncomeExpensesTypeId")
                         .HasColumnType("int");
 
-                    b.Property<bool>("IsIncome")
-                        .HasColumnType("bit");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -64,6 +61,9 @@ namespace TwelfthTask.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<bool>("IsIncome")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .IsRequired()

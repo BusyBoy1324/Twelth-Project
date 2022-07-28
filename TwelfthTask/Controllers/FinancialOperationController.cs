@@ -18,6 +18,7 @@ namespace TwelfthTask.Controllers
         }
 
         [HttpGet]
+        [Route("AllFinancialOperations")]
         public async Task<ActionResult<List<FinancialOperation>>> GetAllAsync()
         {
             return Ok(await _finServices.GetAllAsync());
@@ -31,6 +32,7 @@ namespace TwelfthTask.Controllers
         }
 
         [HttpPost]
+        [Route("CreateFinancialOperation")]
         public async Task<ActionResult<FinancialOperation>> AddFinancialOperationAsync([FromBody] FinancialOperationDto financialOperationCreate)
         {
             var financialOperation = await _finServices.InsertAsync(financialOperationCreate);
@@ -38,6 +40,7 @@ namespace TwelfthTask.Controllers
         }
 
         [HttpPut]
+        [Route("UpdateFinancialOperation")]
         public async Task<ActionResult<FinancialOperation>> UpdateFinancialOperation(
             [FromBody] FinancialOperation request)
         {
@@ -46,6 +49,7 @@ namespace TwelfthTask.Controllers
         }
 
         [HttpDelete]
+        [Route("DeleteFinancialOperation")]
         public async Task<ActionResult<List<FinancialOperation>>> DeleteFinancialOperationAsync([FromQuery] int id)
         {
             await _finServices.Delete(id);

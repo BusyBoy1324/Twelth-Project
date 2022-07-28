@@ -4,22 +4,22 @@
 
 namespace TwelfthTask.Migrations
 {
-    public partial class IsIncome : Migration
+    public partial class IncomeExpensesName : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<bool>(
-                name: "IsIncome",
+            migrationBuilder.AddColumn<string>(
+                name: "IncomeExpensesName",
                 table: "FinancialOperations",
-                type: "bit",
+                type: "nvarchar(max)",
                 nullable: false,
-                defaultValue: false);
+                defaultValue: "");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "IsIncome",
+                name: "IncomeExpensesName",
                 table: "FinancialOperations");
         }
     }

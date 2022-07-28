@@ -37,6 +37,10 @@ namespace TwelfthTask.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("IncomeExpensesName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("IncomeExpensesTypeId")
                         .HasColumnType("int");
 

@@ -1,0 +1,60 @@
+﻿@page "/financialoperations"
+@inject IFInancialOperationServices FinancialOperationServices
+@inject NavigationManager Navigation
+
+<PageTitle>Financial Operations</PageTitle>
+
+<h3>Financial Operations</h3>
+
+<RadzenButton Icon="add_circle_outline" Text="Create" Click="@CreateClick" />
+<table class="table table-striped table-bordered bg-light">
+	<thead>
+	<tr>
+		<th>Name</th>
+		<th>Description</th>
+		<th>Date</th>
+		<th>Price</th>
+		<th>Income Expenses Name</th>
+		<th></th>
+	</tr>
+	</thead>
+	<tbody>
+	@foreach (var financialOperation in FinancialOperationServices.FinancialOperations)
+	{
+		<tr>
+			<td>@financialOperation.Name</td>
+			<td>@financialOperation.Description</td>
+			<td>@financialOperation.Date</td>
+			<td>@financialOperation.Price</td>
+			<td>@financialOperation.IncomeExpensesName</td>
+			<td>
+				<RadzenButton Icon="check_circle" ButtonStyle="ButtonStyle.Success" Text="Edit" Click="@((args) => EditClick(financialOperation.Id))" />
+				<RadzenButton Icon="delete" ButtonStyle="ButtonStyle.Danger" Text="Delete" Click="@((args) => DeleteFinancialOperationAsync(financialOperation.Id))" />
+			</td>
+		</tr>
+	}
+	</tbody>
+</table>
+
+@code {
+	protected override async Task OnInitializedAsync()
+	{
+		await FinancialOperationServices.GetAllFinancialOperationsAsync();
+	}
+
+	private void EditClick(int id)
+	{
+		Navigation.NavigateTo($"/financialoperation/edit/{id}");
+	}
+
+	private async Task DeleteFinancialOperationAsync(int id)
+	{
+		await FinancialOperationServices.DeleteFinancialOperationAsync(id);
+		await FinancialOperationServices.GetAllFinancialOperationsAsync();
+	}
+
+	private void CreateClick()
+	{
+		Navigation.NavigateTo("/financialoperation");
+	}
+}
