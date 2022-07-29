@@ -12,8 +12,8 @@ using TwelfthTask.Data;
 namespace TwelfthTask.Migrations
 {
     [DbContext(typeof(TwelfthProjectContext))]
-    [Migration("20220721135804_FixedIsIncome")]
-    partial class FixedIsIncome
+    [Migration("20220727131742_IncomeExpensesName")]
+    partial class IncomeExpensesName
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -36,6 +36,10 @@ namespace TwelfthTask.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("IncomeExpensesName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

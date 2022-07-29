@@ -1,0 +1,96 @@
+﻿@page "/incomeexpense/edit/{id:int}"
+@inject IIncomeExpensesServices IncomeExpensesServices
+@inject NavigationManager Navigation
+
+<h3>Editing @incomeExpenses.Name</h3>
+
+@if (ErrorMessage != null)
+{
+	<input type="text" placeholder="@ErrorMessage" readonly="readonly"/>
+}
+
+<RadzenTemplateForm Data="incomeExpenses" Submit="@((IncomeExpenses args) => { SubmitAsync(args); })">
+	<div class="row">
+            <div class="col-md-6">
+                <RadzenFieldset Text="Editing Income Expenses Type">
+                     <div class="row">
+                        <div class="col-md-4 align-items-center d-flex">
+                            <RadzenLabel Text="Id" />
+                        </div>
+                        <div class="col-md-8">
+                            <RadzenNumeric style="width: 100%;" @bind-Value="incomeExpenses.Id" ReadOnly/>
+                        </div>
+                    </div>
+					<div class="row">
+                        <div class="col-md-4 align-items-center d-flex">
+                            <RadzenLabel Text="Name" />
+                        </div>
+                        <div class="col-md-8">
+                            <RadzenTextBox style="width: 100%;" @bind-Value="incomeExpenses.Name" />
+                        </div>
+                    </div>
+					<div class="row">
+                        <div class="col-md-4 align-items-center d-flex">
+                            <RadzenLabel Text="IsIncome" />
+                        </div>
+                        <div class="col-md-8">
+                            <RadzenCheckBox style="width: 5%;" @bind-Value="incomeExpenses.IsIncome" />
+                        </div>
+                    </div>
+					<div class="row justify-content-center">
+                        <div class="col-md-12 d-flex align-items-end justify-content-center" style="margin-top: 16px;">
+                            <RadzenButton ButtonType="ButtonType.Submit" Icon="check_circle" ButtonStyle="ButtonStyle.Success" Text="Edit" />
+                        </div>
+                    </div>
+				</RadzenFieldset>
+			</div>
+	</div>
+</RadzenTemplateForm>
+
+@code {
+	[Parameter]
+	public int Id { get; set; }
+	public string ErrorMessage { get; set; }
+
+	TwelfthTask.Models.IncomeExpenses incomeExpenses = new();
+
+	protected override async Task OnInitializedAsync()
+	{
+		try
+		{
+			await IncomeExpensesServices.GetAllIncomeExpensesAsync();
+		}
+		catch (Exception ex)
+		{
+			ErrorMessage = ex.Message;
+		}
+	}
+
+	protected override async Task OnParametersSetAsync()
+	{
+		if (Id != null)
+		{
+			try
+			{
+				incomeExpenses = await IncomeExpensesServices.GetSingleIncomeExpensesAsync(Id);
+			}
+			catch (Exception ex)
+			{
+				ErrorMessage = ex.Message;
+			}
+		}
+	}
+
+	private async Task SubmitAsync(IncomeExpenses args)
+	{
+		try
+		{
+			await IncomeExpensesServices.UpdateIncomeExpensesAsync(incomeExpenses);
+			Navigation.NavigateTo("incomeexpenses");
+		}
+		catch (Exception ex)
+		{
+			ErrorMessage = ex.Message;
+		}
+	}
+}

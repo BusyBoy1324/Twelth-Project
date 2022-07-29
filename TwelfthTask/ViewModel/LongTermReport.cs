@@ -18,5 +18,10 @@ namespace TwelfthTask.Services
             Expenses = expenses;
             Operations = operations;
         }
+
+        public LongTermReport()
+        {
+            
+        }
     }
 }

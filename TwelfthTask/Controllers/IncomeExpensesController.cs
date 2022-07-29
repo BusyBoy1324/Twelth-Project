@@ -7,16 +7,17 @@ namespace TwelfthTask.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class IncomeExpensesContoller : ControllerBase
+    public class IncomeExpensesController : ControllerBase
     {
         private readonly IIncomeExpensesTypeServices _incomeExpensesServices;
 
-        public IncomeExpensesContoller(IIncomeExpensesTypeServices incomeExpensesServices)
+        public IncomeExpensesController(IIncomeExpensesTypeServices incomeExpensesServices)
         {
             _incomeExpensesServices = incomeExpensesServices;
         }
 
         [HttpGet]
+        [Route( "AllIncomeExpenses")]
         public async Task<ActionResult<List<IncomeExpenses>>> GetAllIncomeExpensesAsync()
         {
             return Ok(await _incomeExpensesServices.GetAllAsync());
@@ -30,6 +31,7 @@ namespace TwelfthTask.Controllers
         }
 
         [HttpPost]
+        [Route("CreateIncomeExpenses")]
         public async Task<ActionResult<List<IncomeExpenses>>> AddIncomeExpensesAsync([FromBody] IncomeExpensesDto incomeExpensesCreate)
         {
             var incomeExpenses = await _incomeExpensesServices.InsertAsync(incomeExpensesCreate);
@@ -37,6 +39,7 @@ namespace TwelfthTask.Controllers
         }
 
         [HttpPut]
+        [Route("UpdateIncomeExpenses")]
         public async Task<ActionResult<IncomeExpenses>> UpdateIncomeExpensesAsync(
             [FromBody] IncomeExpenses request)
         {
@@ -45,6 +48,7 @@ namespace TwelfthTask.Controllers
         }
 
         [HttpDelete]
+        [Route("DeleteIncomeExpenses")]
         public async Task<ActionResult<List<IncomeExpenses>>> DeleteIncomeExpensesAsync([FromQuery] int id)
         {
             await _incomeExpensesServices.DeleteAsync(id);

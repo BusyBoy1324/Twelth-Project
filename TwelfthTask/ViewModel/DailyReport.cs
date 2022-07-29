@@ -14,5 +14,10 @@
             TotalExpenses = expenses;
             Operations = financialOperations;
         }
+
+        public DailyReport()
+        {
+            
+        }
     }
 }

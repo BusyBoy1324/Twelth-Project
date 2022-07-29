@@ -1,0 +1,75 @@
+﻿@page "/incomeexpenses"
+@inject IIncomeExpensesServices IncomeExpensesServices
+@inject NavigationManager Navigation
+
+<PageTitle>Income Expenses</PageTitle>
+
+<h3>IncomeExpenses</h3>
+
+@if (ErrorMessage != null)
+{
+	<input type="text" placeholder="@ErrorMessage" readonly="readonly"/>
+}
+
+<RadzenButton Icon="add_circle_outline" Text="Create" Click="@CreateClick" />
+<table class="table table-striped table-bordered bg-light">
+	<thead>
+	<tr>
+		<th>Name</th>
+		<th>IsIncome</th>
+		<th></th>
+	</tr>
+	</thead>
+	<tbody>
+		@foreach (var incomeExpense in IncomeExpensesServices.IncomeExpenses)
+		{
+			<tr>
+				<td>@incomeExpense.Name</td>
+				<td>@incomeExpense.IsIncome</td>
+				<td>
+					<RadzenButton Icon="check_circle" ButtonStyle="ButtonStyle.Success" Text="Edit" Click="@((args) => EditClick(incomeExpense.Id))" />
+					<RadzenButton Icon="delete" ButtonStyle="ButtonStyle.Danger" Text="Delete" Click="@((args) => DeleteIncomeExpensesAsync(incomeExpense.Id))" />
+				</td>
+			</tr>
+		}
+	</tbody>
+</table>
+
+@code {
+	[Parameter]
+	public string ErrorMessage { get; set; }
+
+	protected override async Task OnInitializedAsync()
+	{
+		try
+		{
+			await IncomeExpensesServices.GetAllIncomeExpensesAsync();
+		}
+		catch (Exception ex)
+		{
+			ErrorMessage = ex.Message;
+		}
+	}
+
+	private void EditClick(int id)
+	{
+		Navigation.NavigateTo($"/incomeexpense/edit/{id}");
+	}
+
+	private void CreateClick()
+	{
+		Navigation.NavigateTo("/incomeexpense");
+	}
+
+	private async Task DeleteIncomeExpensesAsync(int id)
+	{
+		try
+		{
+			IncomeExpensesServices.IncomeExpenses = await IncomeExpensesServices.DeleteIncomeExpensesAsync(id);
+		}
+		catch (Exception ex)
+		{
+			ErrorMessage = ex.Message;
+		}
+	}
+}

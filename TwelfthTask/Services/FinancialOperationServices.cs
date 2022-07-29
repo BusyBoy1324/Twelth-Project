@@ -44,6 +44,11 @@ namespace TwelfthTask.Services
 
         public async Task<FinancialOperation> InsertAsync(FinancialOperationDto financialOperationCreate)
         {
+            var incomeExpenses = await _context.IncomeExpenses.Where(n => n.Name == financialOperationCreate.IncomeExpensesName).FirstOrDefaultAsync();
+            if (incomeExpenses != null)
+            {
+                financialOperationCreate.IncomeExpensesTypeId = incomeExpenses.Id;
+            }
             var financialOperation = GetMappedModel(financialOperationCreate);
             _context.FinancialOperations.Add(financialOperation);
             await Save();
@@ -69,7 +74,7 @@ namespace TwelfthTask.Services
 
         public async Task<List<FinancialOperation>> GetAllByPeriodAsync(DateTime startDate, DateTime endDate)
         {
-            var financialOperations = await _context.FinancialOperations.Where(d => d.Date < endDate || d.Date > startDate).ToListAsync();
+            var financialOperations = await _context.FinancialOperations.Where(d => d.Date < endDate && d.Date > startDate).ToListAsync();
             return financialOperations;
         }
     }
