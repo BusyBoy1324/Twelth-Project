@@ -19,7 +19,7 @@
 						<RadzenLabel Text="Start Date" />
 					</div>
 					<div class="col-md-8">
-						<RadzenDatePicker style="width: 100%;" @bind-Value="startDate" DateFormat="yyyy-MM-dd"/>
+						<RadzenDatePicker style="width: 100%;" @bind-Value="currentStartDate" DateFormat="yyyy-MM-dd" Change="@((e) => SelectedStartDate(DateTime.Parse(e.Value.ToString())))"/>
 					</div>
 				</div>
 				<div class="row">
@@ -27,7 +27,7 @@
 						<RadzenLabel Text="End Date" />
 					</div>
 					<div class="col-md-8">
-						<RadzenDatePicker style="width: 100%;" @bind-Value="endDate" DateFormat="yyyy-MM-dd"/>
+						<RadzenDatePicker style="width: 100%;" @bind-Value="currentEndDate" DateFormat="yyyy-MM-dd" Change="@((e) => SelectedEndDate(DateTime.Parse(e.Value.ToString())))"/>
 					</div>
 				</div>
 				<div class="row justify-content-center">
@@ -98,9 +98,21 @@
 	[Parameter]
 	public string ErrorMessage { get; set; }
 
+	DateTime currentStartDate = DateTime.Now;
+	DateTime currentEndDate = DateTime.Now;
 	DateTime startDate , endDate = new(); 
 	TwelfthTask.Services.LongTermReport longTermReport = new();
 	
+	private void SelectedStartDate(DateTime dateTime)
+	{
+		startDate = dateTime;
+	}
+
+	private void SelectedEndDate(DateTime dateTime)
+	{
+		endDate = dateTime;
+	}
+
 	private async Task SubmitAsync(DateTime args)
 	{
 		try

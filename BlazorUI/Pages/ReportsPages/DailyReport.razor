@@ -19,7 +19,7 @@
 						<RadzenLabel Text="Date" />
 					</div>
 					<div class="col-md-8">
-						<RadzenDatePicker style="width: 100%;" @bind-Value="date" DateFormat="yyyy-MM-dd"/>
+						<RadzenDatePicker style="width: 100%;" @bind-Value="curentDate" DateFormat="yyyy-MM-dd" Change="@((e) => SelectedDate(DateTime.Parse(e.Value.ToString())))"/>
 					</div>
 				</div>
 				<div class="row justify-content-center">
@@ -90,9 +90,15 @@
 	[Parameter]
 	public string ErrorMessage { get; set; }
 
+	DateTime curentDate = DateTime.Now;
 	DateTime date = new();
 	TwelfthTask.Models.DailyReport dailyReport = new();
-	
+
+	private void SelectedDate(DateTime dateTime)
+	{
+		date = dateTime;
+	}
+
 	private async Task SubmitAsync(DateTime args)
 	{
 		try
