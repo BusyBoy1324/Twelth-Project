@@ -6,6 +6,11 @@
 
 <h3>Financial Operations</h3>
 
+@if (ErrorMessage != null)
+{
+	<input type="text" placeholder="@ErrorMessage" readonly="readonly"/>
+}
+
 <RadzenButton Icon="add_circle_outline" Text="Create" Click="@CreateClick" />
 <table class="table table-striped table-bordered bg-light">
 	<thead>
@@ -37,9 +42,19 @@
 </table>
 
 @code {
+	[Parameter]
+	public string ErrorMessage { get; set; }
+
 	protected override async Task OnInitializedAsync()
 	{
-		await FinancialOperationServices.GetAllFinancialOperationsAsync();
+		try
+		{
+			await FinancialOperationServices.GetAllFinancialOperationsAsync();
+		}
+		catch (Exception ex)
+		{
+			ErrorMessage = ex.Message;
+		}
 	}
 
 	private void EditClick(int id)
@@ -49,8 +64,15 @@
 
 	private async Task DeleteFinancialOperationAsync(int id)
 	{
-		await FinancialOperationServices.DeleteFinancialOperationAsync(id);
-		await FinancialOperationServices.GetAllFinancialOperationsAsync();
+		try
+		{
+			FinancialOperationServices.FinancialOperations = await FinancialOperationServices.DeleteFinancialOperationAsync(id);
+		}
+		catch (Exception ex)
+		{
+			ErrorMessage = ex.Message;
+		}
+
 	}
 
 	private void CreateClick()

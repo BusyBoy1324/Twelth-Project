@@ -5,6 +5,11 @@
 
 <h3>Daily Report</h3>
 
+@if (ErrorMessage != null)
+{
+	<input type="text" placeholder="@ErrorMessage" readonly="readonly"/>
+}
+
 <RadzenTemplateForm Data="@date" Submit="@((DateTime args) => { SubmitAsync(args); })">
 	<div class="row">
 		<div class="col-md-6">
@@ -82,11 +87,21 @@
 }
 
 @code {
+	[Parameter]
+	public string ErrorMessage { get; set; }
+
 	DateTime date = new();
 	TwelfthTask.Models.DailyReport dailyReport = new();
 	
 	private async Task SubmitAsync(DateTime args)
 	{
-		dailyReport = await ReportServices.GetDailyReportByDate(date);
+		try
+		{
+			dailyReport = await ReportServices.GetDailyReportByDate(date);
+		}
+		catch (Exception ex)
+		{
+			ErrorMessage = ex.Message;
+		}
 	}
 }

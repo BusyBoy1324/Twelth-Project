@@ -4,6 +4,11 @@
 
 <h3>CreateIncomeExpenses</h3>
 
+@if (ErrorMessage != null)
+{
+	<input type="text" placeholder="@ErrorMessage" readonly="readonly"/>
+}
+
 <RadzenTemplateForm Data="incomeExpensesDto" Submit="@((IncomeExpensesDto args) => { SubmitAsync(args); })">
 	<div class="row">
             <div class="col-md-6">
@@ -36,7 +41,8 @@
 </RadzenTemplateForm>
 
 @code {
-	bool ShouldBeChecked = true;
+	[Parameter]
+	public string ErrorMessage { get; set; }
 
 	TwelfthTask.Models.IncomeExpensesDto incomeExpensesDto = new();
 
@@ -47,7 +53,14 @@
 
 	private async Task SubmitAsync(IncomeExpensesDto args)
 	{
-		await IncomeExpensesServices.CreateIncomeExpensesAsync(incomeExpensesDto);
-		Navigation.NavigateTo("incomeexpenses");
+		try
+		{
+			await IncomeExpensesServices.CreateIncomeExpensesAsync(incomeExpensesDto);
+			Navigation.NavigateTo("incomeexpenses");
+		}
+		catch (Exception ex)
+		{
+			ErrorMessage = ex.Message;
+		}
 	}
 }

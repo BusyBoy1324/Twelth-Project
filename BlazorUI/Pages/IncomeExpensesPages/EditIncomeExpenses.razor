@@ -4,6 +4,11 @@
 
 <h3>Editing @incomeExpenses.Name</h3>
 
+@if (ErrorMessage != null)
+{
+	<input type="text" placeholder="@ErrorMessage" readonly="readonly"/>
+}
+
 <RadzenTemplateForm Data="incomeExpenses" Submit="@((IncomeExpenses args) => { SubmitAsync(args); })">
 	<div class="row">
             <div class="col-md-6">
@@ -43,29 +48,49 @@
 </RadzenTemplateForm>
 
 @code {
-	bool ShouldBeChecked = true;
-
 	[Parameter]
 	public int Id { get; set; }
+	public string ErrorMessage { get; set; }
 
 	TwelfthTask.Models.IncomeExpenses incomeExpenses = new();
 
 	protected override async Task OnInitializedAsync()
 	{
-		await IncomeExpensesServices.GetAllIncomeExpensesAsync();
+		try
+		{
+			await IncomeExpensesServices.GetAllIncomeExpensesAsync();
+		}
+		catch (Exception ex)
+		{
+			ErrorMessage = ex.Message;
+		}
 	}
 
 	protected override async Task OnParametersSetAsync()
 	{
 		if (Id != null)
 		{
-			incomeExpenses = await IncomeExpensesServices.GetSingleIncomeExpensesAsync(Id);
+			try
+			{
+				incomeExpenses = await IncomeExpensesServices.GetSingleIncomeExpensesAsync(Id);
+			}
+			catch (Exception ex)
+			{
+				ErrorMessage = ex.Message;
+			}
 		}
 	}
 
 	private async Task SubmitAsync(IncomeExpenses args)
 	{
-		await IncomeExpensesServices.UpdateIncomeExpensesAsync(incomeExpenses);
-		Navigation.NavigateTo("incomeexpenses");
+		try
+		{
+			await IncomeExpensesServices.UpdateIncomeExpensesAsync(incomeExpenses);
+			Navigation.NavigateTo("incomeexpenses");
+		}
+		catch (Exception ex)
+		{
+			ErrorMessage = ex.Message;
+		}
 	}
 }

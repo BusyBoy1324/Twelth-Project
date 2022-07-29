@@ -5,6 +5,11 @@
 
 <h3>Long Term Report</h3>
 
+@if (ErrorMessage != null)
+{
+	<input type="text" placeholder="@ErrorMessage" readonly="readonly"/>
+}
+
 <RadzenTemplateForm Data="@startDate" Submit="@((DateTime args) => { SubmitAsync(args); })">
 	<div class="row">
 		<div class="col-md-6">
@@ -90,11 +95,21 @@
 }
 
 @code {
+	[Parameter]
+	public string ErrorMessage { get; set; }
+
 	DateTime startDate , endDate = new(); 
 	TwelfthTask.Services.LongTermReport longTermReport = new();
 	
 	private async Task SubmitAsync(DateTime args)
 	{
-		longTermReport = await ReportServices.GetLongTermReportByDate(startDate, endDate);
+		try
+		{
+			longTermReport = await ReportServices.GetLongTermReportByDate(startDate, endDate);
+		}
+		catch (Exception ex)
+		{
+			ErrorMessage = ex.Message;
+		}
 	}
 }

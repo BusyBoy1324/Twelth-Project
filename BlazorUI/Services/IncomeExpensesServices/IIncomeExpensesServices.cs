@@ -5,10 +5,10 @@ namespace BlazorUI.Services.IncomeExpensesService
     public interface IIncomeExpensesServices
     {
         List<IncomeExpenses> IncomeExpenses { get; set; }
-        Task GetAllIncomeExpensesAsync();
+        Task<List<IncomeExpenses>> GetAllIncomeExpensesAsync();
         Task<IncomeExpenses> GetSingleIncomeExpensesAsync(int id);
-        Task UpdateIncomeExpensesAsync(IncomeExpenses request);
-        Task CreateIncomeExpensesAsync(IncomeExpensesDto incomeExpensesDto);
-        Task DeleteIncomeExpensesAsync(int id);
+        Task<IncomeExpenses> UpdateIncomeExpensesAsync(IncomeExpenses request);
+        Task<IncomeExpensesDto> CreateIncomeExpensesAsync(IncomeExpensesDto incomeExpensesDto);
+        Task<List<IncomeExpenses>> DeleteIncomeExpensesAsync(int id);
     }
 }

@@ -5,6 +5,11 @@
 
 <h3>Editing @financialOperation.Name</h3>
 
+@if (ErrorMessage != null)
+{
+	<input type="text" placeholder="@ErrorMessage" readonly="readonly"/>
+}
+
 <RadzenTemplateForm Data="@financialOperation" Submit="@((FinancialOperation args) => { SubmitAsync(args); })">
         <div class="row">
             <div class="col-md-6">
@@ -71,25 +76,47 @@
 @code {
     [Parameter]
     public int Id { get; set; }
+    public string ErrorMessage { get; set; }
 
     FinancialOperation financialOperation = new();
 
     protected override async Task OnInitializedAsync()
     {
-        await IncomeExpensesServices.GetAllIncomeExpensesAsync();
+	    try
+	    {
+		    await IncomeExpensesServices.GetAllIncomeExpensesAsync();
+	    }
+	    catch (Exception ex)
+	    {
+		    ErrorMessage = ex.Message;
+	    }
     }
 
     protected override async Task OnParametersSetAsync()
     {
 		if (Id != null)
 		{
-			financialOperation = await FinancialOperationServices.GetSingleFinanceOperationAsync(Id);
+			try
+			{
+				financialOperation = await FinancialOperationServices.GetSingleFinanceOperationAsync(Id);
+			}
+			catch (Exception ex)
+			{
+				ErrorMessage = ex.Message;
+			}
 		}
 	}
 
 	private async Task SubmitAsync(FinancialOperation agrs)
 	{
-		await FinancialOperationServices.UpdateFinancialOperationAsync(financialOperation);
-		Navigation.NavigateTo("financialoperations");
+		try
+		{
+			await FinancialOperationServices.UpdateFinancialOperationAsync(financialOperation);
+			Navigation.NavigateTo("financialoperations");
+		}
+		catch (Exception ex)
+		{
+			ErrorMessage = ex.Message;
+		}
 	}
 }

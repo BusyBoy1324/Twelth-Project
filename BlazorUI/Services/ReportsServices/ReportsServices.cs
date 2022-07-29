@@ -5,25 +5,69 @@ namespace BlazorUI.Services.ReportsServices
 {
     public class ReportsServices : IReportsServices
     {
+        private readonly IHttpClientFactory _clientFactory;
         private readonly HttpClient _httpClient;
 
-        public ReportsServices(HttpClient httpClient)
+        public ReportsServices(IHttpClientFactory _clientFactory)
         {
-            _httpClient = httpClient;
+            _clientFactory = _clientFactory;
+            _httpClient = _clientFactory.CreateClient("client");
         }
 
         public async Task<DailyReport> GetDailyReportByDate(DateTime date)
         {
-             Console.WriteLine(_httpClient.BaseAddress + $"api/ReportsContoller/{date.ToString("yyyy-MM-dd")}");
-             DailyReport dailyReport = await _httpClient.GetFromJsonAsync<DailyReport>($"api/ReportsContoller/{date.ToString("yyyy-MM-dd")}");
-             return dailyReport;
+            try
+            {
+                var response =
+                    await _httpClient.GetAsync(
+                        $"api/ReportsContoller/{date.ToString("yyyy-MM-dd")}");
+                if (response.IsSuccessStatusCode)
+                {
+                    if (response.StatusCode == System.Net.HttpStatusCode.NoContent)
+                    {
+                        return default(DailyReport);
+                    }
+
+                    return await response.Content.ReadFromJsonAsync<DailyReport>();
+                }
+                else
+                {
+                    var message = await response.Content.ReadAsStringAsync();
+                    throw new Exception(message);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
         public async Task<LongTermReport> GetLongTermReportByDate(DateTime startDate, DateTime endDate)
         {
-            LongTermReport longTermReport =
-                await _httpClient.GetFromJsonAsync<LongTermReport>($"api/ReportsContoller/{startDate.ToString("yyyy-MM-dd")}, {endDate.ToString("yyyy-MM-dd")}");
-            return longTermReport;
+            try
+            {
+                var response =
+                    await _httpClient.GetAsync(
+                        $"api/ReportsContoller/{startDate.ToString("yyyy-MM-dd")}, {endDate.ToString("yyyy-MM-dd")}");
+                if (response.IsSuccessStatusCode)
+                {
+                    if (response.StatusCode == System.Net.HttpStatusCode.NoContent)
+                    {
+                        return default(LongTermReport);
+                    }
+
+                    return await response.Content.ReadFromJsonAsync<LongTermReport>();
+                }
+                else
+                {
+                    var message = await response.Content.ReadAsStringAsync();
+                    throw new Exception(message);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
     }
 }

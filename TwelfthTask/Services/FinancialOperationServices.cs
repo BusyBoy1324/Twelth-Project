@@ -74,7 +74,7 @@ namespace TwelfthTask.Services
 
         public async Task<List<FinancialOperation>> GetAllByPeriodAsync(DateTime startDate, DateTime endDate)
         {
-            var financialOperations = await _context.FinancialOperations.Where(d => d.Date < endDate || d.Date > startDate).ToListAsync();
+            var financialOperations = await _context.FinancialOperations.Where(d => d.Date < endDate && d.Date > startDate).ToListAsync();
             return financialOperations;
         }
     }
